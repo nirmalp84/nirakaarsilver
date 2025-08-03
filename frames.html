@@ -1,0 +1,2096 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silver Frames - Nirakaar Silver</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/supabase/2.39.1/supabase.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles - Mobile Optimized */
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-circle {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-section h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .logo-section p {
+            font-size: 11px;
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        /* Desktop Navigation */
+        .nav {
+            display: flex;
+        }
+
+        .nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        .nav-item {
+            color: white;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Navigation - Enhanced */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: calc(100vh - 70px);
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            z-index: 999;
+            padding: 20px;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .mobile-nav.active {
+            transform: translateX(0);
+        }
+
+        .mobile-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        }
+
+        .mobile-nav ul li {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .mobile-nav .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+            text-decoration: none;
+            padding: 18px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: left;
+            position: relative;
+            cursor: pointer;
+            -webkit-tap-highlight-color: rgba(255,255,255,0.1);
+            touch-action: manipulation;
+            user-select: none;
+            min-height: 55px;
+        }
+
+        .mobile-nav .nav-item:active {
+            background: rgba(255,255,255,0.2);
+            transform: scale(0.98);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .mobile-nav .nav-item.active {
+            background: rgba(255,215,0,0.2);
+            border-color: rgba(255,215,0,0.3);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cart-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .cart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #f39c12;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Hamburger Menu - Enhanced */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: rgba(255,255,255,0.1);
+            touch-action: manipulation;
+            position: relative;
+            z-index: 1001;
+            min-width: 40px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-toggle:active {
+            background: rgba(255,255,255,0.2);
+            transform: scale(0.95);
+        }
+
+        /* Category Hero - Mobile Optimized */
+        .category-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 0 60px;
+            text-align: center;
+        }
+
+        .category-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .category-subtitle {
+            font-size: 16px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Search and Filter Section - Mobile Enhanced */
+        .search-filter-section {
+            background: white;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+        }
+
+        .search-filter-bar {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.1);
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .filter-row select {
+            padding: 10px 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .filter-row select:focus {
+            border-color: #3498db;
+        }
+
+        .refresh-btn {
+            padding: 10px 15px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .refresh-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Products Section - Mobile Optimized */
+        .products-section {
+            padding: 30px 0;
+        }
+
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: #2c3e50;
+        }
+
+        .products-count {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+            min-height: 200px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            height: 220px;
+            background: #ecf0f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            color: #bdc3c7;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: white;
+            font-size: 14px;
+        }
+
+        .product-card:hover .product-overlay {
+            opacity: 1;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+
+        .product-name:hover {
+            color: #f39c12;
+        }
+
+        .product-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 12px;
+        }
+
+        .product-description {
+            color: #7f8c8d;
+            font-size: 13px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .product-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 10px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 13px;
+            min-height: 40px;
+            -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Loading and No Products States */
+        .loading-message,
+        .no-products {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 50px 20px;
+            color: #7f8c8d;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Product Detail Modal - Mobile Enhanced */
+        .product-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 20px 10px;
+        }
+
+        .product-modal-content {
+            background: white;
+            margin: 0 auto;
+            max-width: 800px;
+            border-radius: 15px;
+            position: relative;
+            padding: 25px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            background: #f1f1f1;
+            color: #333;
+        }
+
+        .product-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .product-detail-image {
+            text-align: center;
+        }
+
+        .product-detail-image img {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 10px;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .quantity-controls button {
+            width: 35px;
+            height: 35px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-controls button:active {
+            background: #f1f1f1;
+        }
+
+        #quantity-display {
+            font-size: 18px;
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .modal-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .add-to-cart-modal,
+        .order-now-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            min-height: 45px;
+        }
+
+        .add-to-cart-modal {
+            background: #27ae60;
+            color: white;
+        }
+
+        .order-now-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .add-to-cart-modal:active,
+        .order-now-btn:active {
+            transform: scale(0.98);
+        }
+
+        .delivery-info {
+            margin-top: 20px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .delivery-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .delivery-item i {
+            color: #27ae60;
+            width: 16px;
+        }
+
+        /* Quick Order Modal */
+        .quick-order-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .quick-order-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 350px;
+            width: 100%;
+        }
+
+        .quick-order-btn {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 8px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 45px;
+        }
+
+        .btn-checkout {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            color: white;
+        }
+
+        .btn-cancel {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .quick-order-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Notification - Mobile Enhanced */
+        .notification {
+            position: fixed;
+            top: 90px;
+            right: 15px;
+            left: 15px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(-100px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            max-width: none;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        /* Footer - Simplified for Mobile */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            text-align: center;
+        }
+
+        .footer-section h3,
+        .footer-section h4 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-section ul li a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 14px;
+        }
+
+        .footer-section ul li a:hover {
+            color: #f39c12;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: #34495e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: #f39c12;
+            transform: translateY(-2px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #34495e;
+            padding-top: 20px;
+            margin-top: 20px;
+            text-align: center;
+            color: #bdc3c7;
+            font-size: 13px;
+        }
+
+        /* Mobile Responsive Design */
+        @media (max-width: 768px) {
+            /* Hide desktop navigation */
+            .nav {
+                display: none;
+            }
+
+            /* Show mobile menu toggle */
+            .menu-toggle {
+                display: flex;
+            }
+
+            /* Show mobile navigation when active */
+            .mobile-nav {
+                display: block;
+            }
+
+            /* Adjust logo for mobile */
+            .logo-section h1 {
+                font-size: 18px;
+            }
+
+            .logo-section p {
+                display: none;
+            }
+
+            .logo-circle {
+                width: 38px;
+                height: 38px;
+                font-size: 16px;
+            }
+
+            /* Category hero mobile adjustments */
+            .category-title {
+                font-size: 26px;
+            }
+
+            .category-subtitle {
+                font-size: 14px;
+            }
+
+            /* Products grid mobile */
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 15px;
+            }
+
+            .product-card {
+                border-radius: 12px;
+            }
+
+            .product-image {
+                height: 200px;
+            }
+
+            .product-info {
+                padding: 15px;
+            }
+
+            /* Search filter mobile */
+            .search-filter-bar {
+                gap: 12px;
+            }
+
+            .filter-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            /* Modal mobile adjustments */
+            .product-modal {
+                padding: 10px 5px;
+            }
+
+            .product-modal-content {
+                padding: 20px 15px;
+                margin-top: 10px;
+            }
+
+            .modal-actions {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            /* Container mobile padding */
+            .container {
+                padding: 0 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Very small screens */
+            .category-hero {
+                padding: 90px 0 40px;
+            }
+
+            .category-title {
+                font-size: 22px;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header-actions {
+                gap: 8px;
+            }
+
+            .cart-btn {
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+        }
+
+        /* Touch improvements for all interactive elements */
+        @media (hover: none) and (pointer: coarse) {
+            .product-card:hover {
+                transform: none;
+            }
+            
+            .product-card:active {
+                transform: scale(0.98);
+            }
+            
+            .btn:hover {
+                transform: none;
+            }
+        }
+
+        /* Overlay for mobile menu */
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-menu-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-overlay {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo-section">
+                <div class="logo-circle">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div>
+                    <h1>Nirakaar Silver</h1>
+                    <p>Premium Silver Craftsmanship</p>
+                </div>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <nav class="nav">
+                <ul>
+                    <li><a href="index.html" class="nav-item">Home</a></li>
+                    <li><a href="frames.html" class="nav-item active">Silver Frames</a></li>
+                    <li><a href="pots.html" class="nav-item">Silver Pots</a></li>
+                    <li><a href="animals.html" class="nav-item">Silver Animals</a></li>
+                    <li><a href="index.html#contact" class="nav-item">Contact</a></li>
+                    <li><a href="orders.html" class="nav-item">Orders</a></li>
+                </ul>
+            </nav>
+
+            <!-- Mobile Navigation -->
+            <nav class="mobile-nav" id="mobileNav">
+                <ul>
+                    <li><a href="index.html" class="nav-item">🏠 Home</a></li>
+                    <li><a href="frames.html" class="nav-item active">🖼️ Silver Frames</a></li>
+                    <li><a href="pots.html" class="nav-item">🏺 Silver Pots</a></li>
+                    <li><a href="animals.html" class="nav-item">🐘 Silver Animals</a></li>
+                    <li><a href="index.html#contact" class="nav-item">📞 Contact</a></li>
+                    <li><a href="orders.html" class="nav-item">📦 Orders</a></li>
+                </ul>
+            </nav>
+            
+            <div class="header-actions">
+                <button class="cart-btn" onclick="showCartModal()">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cart-count">0</span>
+                </button>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Category Hero -->
+    <section class="category-hero">
+        <div class="container">
+            <h1 class="category-title">Silver Frames Collection</h1>
+            <p class="category-subtitle">हस्तनिर्मित प्रीमियम सिल्वर फ्रेम्स का बेहतरीन कलेक्शन</p>
+            <div class="breadcrumb">
+                <a href="index.html">Home</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>Silver Frames</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search and Filter Section -->
+    <section class="search-filter-section">
+        <div class="container">
+            <div class="search-filter-bar">
+                <div class="search-box">
+                    <input type="text" 
+                           placeholder="Search frames..." 
+                           onkeyup="searchProducts(this.value)"
+                           id="searchInput">
+                </div>
+                
+                <div class="filter-row">
+                    <select onchange="filterProducts('price', this.value)" id="priceFilter">
+                        <option value="">All Prices</option>
+                        <option value="0-2000">₹0 - ₹2,000</option>
+                        <option value="2000-5000">₹2,000 - ₹5,000</option>
+                        <option value="5000-10000">₹5,000 - ₹10,000</option>
+                        <option value="10000">₹10,000+</option>
+                    </select>
+                    
+                    <select onchange="filterProducts('size', this.value)" id="sizeFilter">
+                        <option value="">All Sizes</option>
+                        <option value="small">छोटा</option>
+                        <option value="medium">मध्यम</option>
+                        <option value="large">बड़ा</option>
+                    </select>
+                    
+                    <select onchange="filterProducts('style', this.value)" id="styleFilter">
+                        <option value="">All Styles</option>
+                        <option value="traditional">पारंपरिक</option>
+                        <option value="modern">आधुनिक</option>
+                        <option value="decorative">सजावटी</option>
+                    </select>
+                    
+                    <button onclick="refreshProducts()" class="refresh-btn">
+                        <i class="fas fa-refresh"></i> Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products-section">
+        <div class="container">
+            <div class="products-header">
+                <h2 class="section-title">Silver Frames</h2>
+                <div class="products-count">
+                    <span id="productsCount">Loading...</span> Products
+                </div>
+            </div>
+            
+            <!-- Products Grid -->
+            <div id="framesGrid" class="products-grid">
+                <!-- Loading indicator -->
+                <div class="loading-message">
+                    <div class="loading-spinner"></div>
+                    <h3>प्रोडक्ट्स लोड हो रहे हैं...</h3>
+                    <p>कृपया प्रतीक्षा करें</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Detail Modal -->
+    <div id="product-detail-modal" class="product-modal">
+        <div class="product-modal-content">
+            <span class="close-modal" onclick="closeProductModal()">&times;</span>
+            <div class="product-detail-grid">
+                <div class="product-detail-image">
+                    <img id="modal-product-image" src="" alt="" style="display: none;">
+                    <div id="modal-product-placeholder" style="width: 100%; height: 250px; background: #f1f1f1; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 48px; color: #bdc3c7;">
+                        <i class="fas fa-picture-o"></i>
+                    </div>
+                </div>
+                <div class="product-detail-info">
+                    <h2 id="modal-product-name"></h2>
+                    <div class="product-price" id="modal-product-price"></div>
+                    <p id="modal-product-description"></p>
+                    
+                    <div class="quantity-selector">
+                        <label><strong>मात्रा:</strong></label>
+                        <div class="quantity-controls">
+                            <button onclick="changeQuantity(-1)" type="button">-</button>
+                            <span id="quantity-display">1</span>
+                            <button onclick="changeQuantity(1)" type="button">+</button>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button class="add-to-cart-modal" onclick="addToCartFromModal()">
+                            <i class="fas fa-shopping-cart"></i> कार्ट में जोड़ें
+                        </button>
+                        <button class="order-now-btn" onclick="orderNow()">
+                            <i class="fas fa-bolt"></i> अभी ऑर्डर करें
+                        </button>
+                    </div>
+                    
+                    <div class="delivery-info">
+                        <div class="delivery-item">
+                            <i class="fas fa-shipping-fast"></i>
+                            <span>₹1000+ ऑर्डर पर फ्री डिलीवरी</span>
+                        </div>
+                        <div class="delivery-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>100% सिक्योर पेमेंट</span>
+                        </div>
+                        <div class="delivery-item">
+                            <i class="fas fa-undo"></i>
+                            <span>7 दिन रिटर्न पॉलिसी</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Nirakaar Silver</h3>
+                    <p>प्रीमियम सिल्वर क्राफ्ट्समैनशिप का भरोसेमंद नाम</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="frames.html">Silver Frames</a></li>
+                        <li><a href="pots.html">Silver Pots</a></li>
+                        <li><a href="animals.html">Silver Animals</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <div class="contact-info">
+                        <p><i class="fas fa-phone"></i> +91 9001048718</p>
+                        <p><i class="fas fa-envelope"></i> info@nirakaarsilver.com</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Jaipur, Rajasthan</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Nirakaar Silver. All rights reserved.</p>
+                <p>₹1000+ के ऑर्डर पर फ्री डिलीवरी</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global variables
+        let cart = JSON.parse(localStorage.getItem('nirankaar_cart') || '[]');
+        let currentQuantity = 1;
+        let currentProduct = null;
+        let frameProducts = {};
+        let allFrameProducts = {};
+        let filteredProducts = {};
+
+        // Mobile Menu Functions - Enhanced
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            const menuToggle = document.getElementById('menuToggle');
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const isActive = mobileNav.classList.contains('active');
+            
+            if (isActive) {
+                closeMobileMenu();
+            } else {
+                openMobileMenu();
+            }
+        }
+
+        function openMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            const menuToggle = document.getElementById('menuToggle');
+            const overlay = document.getElementById('mobileMenuOverlay');
+            
+            mobileNav.classList.add('active');
+            menuToggle.classList.add('active');
+            overlay.classList.add('active');
+            menuToggle.innerHTML = '<i class="fas fa-times"></i>';
+            
+            // Prevent body scroll when menu is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            const menuToggle = document.getElementById('menuToggle');
+            const overlay = document.getElementById('mobileMenuOverlay');
+            
+            mobileNav.classList.remove('active');
+            menuToggle.classList.remove('active');
+            overlay.classList.remove('active');
+            menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            
+            // Restore body scroll
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close mobile menu when clicking on overlay
+        document.getElementById('mobileMenuOverlay').addEventListener('click', closeMobileMenu);
+
+        // Function to load frames from admin panel localStorage
+        function loadFramesFromStorage() {
+            try {
+                const chunkCount = parseInt(localStorage.getItem('nirakaar_products_count') || '0');
+                
+                if (chunkCount === 0) {
+                    console.log('No admin data found, loading default products');
+                    loadDefaultFrames();
+                    return;
+                }
+                
+                let jsonStr = '';
+                for (let i = 0; i < chunkCount; i++) {
+                    const chunk = localStorage.getItem(`nirakaar_products_${i}`);
+                    if (chunk) {
+                        jsonStr += chunk;
+                    }
+                }
+                
+                if (jsonStr) {
+                    const data = JSON.parse(jsonStr);
+                    const adminFrames = data.products?.frames || [];
+                    
+                    // Convert admin format to website format
+                    frameProducts = {};
+                    allFrameProducts = {};
+                    
+                    adminFrames.forEach(frame => {
+                        const productData = {
+                            id: frame.id,
+                            name: frame.name,
+                            price: frame.price,
+                            description: frame.description || 'सुंदर हस्तनिर्मित सिल्वर फ्रेम',
+                            size: frame.size || 'medium',
+                            style: frame.style || 'traditional',
+                            image: frame.image || null,
+                            category: 'frames'
+                        };
+                        
+                        frameProducts[frame.id] = productData;
+                        allFrameProducts[frame.id] = productData;
+                    });
+                    
+                    filteredProducts = { ...frameProducts };
+                    console.log('✅ Loaded frames from admin panel:', Object.keys(frameProducts).length);
+                    
+                    // Update the products grid
+                    updateProductsGrid();
+                    showNotification(`${Object.keys(frameProducts).length} फ्रेम्स admin panel से लोड हुए!`, 'success');
+                    
+                } else {
+                    loadDefaultFrames();
+                }
+                
+            } catch (error) {
+                console.error('Error loading frames from storage:', error);
+                loadDefaultFrames();
+            }
+        }
+
+        // Default frames if no admin data available
+        function loadDefaultFrames() {
+            frameProducts = {
+                101: {
+                    id: 101,
+                    name: 'पारंपरिक सिल्वर फ्रेम',
+                    price: 2500,
+                    description: 'हस्तनिर्मित पारंपरिक डिज़ाइन के साथ बनाया गया यह सुंदर सिल्वर फ्रेम आपकी यादों को संजोने के लिए परफेक्ट है।',
+                    size: 'medium',
+                    style: 'traditional',
+                    image: null
+                },
+                102: {
+                    id: 102,
+                    name: 'मॉडर्न सिल्वर फ्रेम',
+                    price: 3200,
+                    description: 'आधुनिक डिज़ाइन के साथ एलिगेंट फ्रेम जो आपके घर को स्टाइलिश लुक देता है।',
+                    size: 'large',
+                    style: 'modern',
+                    image: null
+                },
+                103: {
+                    id: 103,
+                    name: 'डेकोरेटिव मिनी फ्रेम',
+                    price: 1800,
+                    description: 'छोटे साइज़ का सुंदर डेकोरेटिव फ्रेम जो टेबल टॉप पर परफेक्ट है।',
+                    size: 'small',
+                    style: 'decorative',
+                    image: null
+                }
+            };
+            
+            allFrameProducts = { ...frameProducts };
+            filteredProducts = { ...frameProducts };
+            updateProductsGrid();
+            showNotification('Default फ्रेम्स लोड हुए! Admin panel से frames add करें।', 'info');
+        }
+
+        // Function to update products grid dynamically
+        function updateProductsGrid() {
+            const grid = document.getElementById('framesGrid');
+            if (!grid) return;
+            
+            // Clear existing content
+            grid.innerHTML = '';
+            
+            const framesList = Object.values(filteredProducts);
+            
+            if (framesList.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-products">
+                        <i class="fas fa-picture-o"></i>
+                        <h3>कोई फ्रेम्स उपलब्ध नहीं हैं</h3>
+                        <p>फिल्टर हटाएं या admin panel से नए फ्रेम्स जोड़ें</p>
+                        <button onclick="clearFilters()" style="margin-top: 15px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            <i class="fas fa-filter"></i> फिल्टर साफ़ करें
+                        </button>
+                    </div>
+                `;
+                document.getElementById('productsCount').textContent = '0';
+                return;
+            }
+            
+            // Create product cards
+            framesList.forEach(product => {
+                const card = createProductCard(product);
+                grid.appendChild(card);
+            });
+            
+            // Update products count
+            document.getElementById('productsCount').textContent = framesList.length;
+        }
+
+        // Function to create product card HTML element
+        function createProductCard(product) {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.setAttribute('data-price', product.price);
+            card.setAttribute('data-size', product.size);
+            card.setAttribute('data-style', product.style);
+            card.setAttribute('data-id', product.id);
+            
+            // Create image HTML
+            let imageHTML;
+            if (product.image) {
+                imageHTML = `<img src="${product.image}" alt="${product.name}">`;
+            } else {
+                imageHTML = '<i class="fas fa-picture-o"></i>';
+            }
+            
+            card.innerHTML = `
+                <div class="product-image" onclick="showProductDetail(${product.id})">
+                    ${imageHTML}
+                    <div class="product-overlay">
+                        <span>View Details</span>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name" onclick="showProductDetail(${product.id})">${product.name}</h3>
+                    <div class="product-price">₹${product.price.toLocaleString()}</div>
+                    <p class="product-description">${product.description}</p>
+                    <div class="product-actions">
+                        <button class="btn btn-primary" onclick="buyNow(${product.id}, '${product.name.replace(/'/g, "\\'")}', ${product.price})">
+                            <i class="fas fa-bolt"></i> अभी खरीदें
+                        </button>
+                        <button class="btn btn-secondary" onclick="showProductDetail(${product.id})">
+                            <i class="fas fa-eye"></i> Details
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Enhanced notification system
+        function showNotification(message, type = 'success') {
+            // Remove any existing notifications
+            const existingNotifications = document.querySelectorAll('.notification');
+            existingNotifications.forEach(notif => notif.remove());
+
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            
+            const icons = {
+                success: 'check-circle',
+                error: 'exclamation-circle',
+                info: 'info-circle'
+            };
+
+            notification.innerHTML = `
+                <i class="fas fa-${icons[type]}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Auto remove
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Buy Now functionality - directly opens quick order modal
+        function buyNow(productId, productName, productPrice) {
+            // Add product to cart first
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: productName,
+                    price: productPrice,
+                    quantity: 1
+                });
+            }
+            
+            saveCart();
+            
+            // Set current product for quick order
+            currentProduct = frameProducts[productId] || allFrameProducts[productId];
+            currentQuantity = 1;
+            
+            // Show quick order modal directly
+            showQuickOrderModal();
+        }
+
+        // Cart functionality
+        function addToCart(productId, productName, productPrice, quantity = 1) {
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: productName,
+                    price: productPrice,
+                    quantity: quantity
+                });
+            }
+            
+            saveCart();
+            showNotification(`${productName} कार्ट में जोड़ दिया गया!`);
+        }
+
+        function saveCart() {
+            localStorage.setItem('nirankaar_cart', JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        function updateCartCount() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount) {
+                cartCount.textContent = totalItems;
+                
+                if (totalItems > 0) {
+                    cartCount.style.display = 'flex';
+                } else {
+                    cartCount.style.display = 'none';
+                }
+            }
+        }
+
+        // Enhanced cart modal
+        function showCartModal() {
+            if (cart.length === 0) {
+                showNotification('आपका कार्ट खाली है!', 'error');
+                return;
+            }
+
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                z-index: 2001;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            `;
+
+            let cartSummary = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                cartSummary += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee;">
+                        <div style="flex: 1;">
+                            <strong>${item.name}</strong><br>
+                            <small style="color: #666;">₹${item.price.toLocaleString()} x ${item.quantity}</small>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-weight: bold;">₹${itemTotal.toLocaleString()}</span>
+                            <button onclick="removeFromCart(${index})" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 12px;">×</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const deliveryCharges = total >= 1000 ? 0 : 100;
+            const finalTotal = total + deliveryCharges;
+
+            modal.innerHTML = `
+                <div style="background: white; padding: 25px; border-radius: 15px; max-width: 450px; width: 100%; max-height: 80vh; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f1f1f1; padding-bottom: 15px;">
+                        <h2 style="margin: 0; color: #2c3e50;">Shopping Cart</h2>
+                        <button onclick="closeCartModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #999; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">&times;</button>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        ${cartSummary}
+                    </div>
+                    
+                    <div style="padding: 15px 0; border-top: 2px solid #2c3e50; margin-top: 15px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #666;">
+                            <span>Subtotal:</span>
+                            <span>₹${total.toLocaleString()}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #666;">
+                            <span>Delivery:</span>
+                            <span style="color: ${total >= 1000 ? '#27ae60' : '#666'};">${total >= 1000 ? 'FREE' : '₹' + deliveryCharges}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; color: #2c3e50;">
+                            <span>Total:</span>
+                            <span>₹${finalTotal.toLocaleString()}</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <button onclick="closeCartModal()" style="padding: 12px; background: #95a5a6; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                            Continue Shopping
+                        </button>
+                        <button onclick="goToCheckout()" style="padding: 12px; background: linear-gradient(135deg, #3498db, #2980b9); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                            <i class="fas fa-arrow-right"></i> Checkout
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: 10px;">
+                        <button onclick="orderViaWhatsApp()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #25d366, #128c7e); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                            <i class="fab fa-whatsapp"></i> Order via WhatsApp
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            modal.id = 'cart-modal';
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            saveCart();
+            closeCartModal();
+            if (cart.length > 0) {
+                showCartModal();
+            }
+            showNotification('प्रोडक्ट कार्ट से हटा दिया गया!', 'info');
+        }
+
+        function closeCartModal() {
+            const modal = document.getElementById('cart-modal');
+            if (modal) {
+                document.body.removeChild(modal);
+            }
+        }
+
+        function goToCheckout() {
+            closeCartModal();
+            window.location.href = 'orders.html?tab=checkout';
+        }
+
+        function orderViaWhatsApp() {
+            let message = `🛍️ *नया ऑर्डर - Nirakaar Silver*\n\n`;
+            message += `📦 *ऑर्डर डिटेल्स:*\n`;
+            
+            let total = 0;
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                message += `• ${item.name}\n  ₹${item.price.toLocaleString()} x ${item.quantity} = ₹${itemTotal.toLocaleString()}\n\n`;
+            });
+            
+            const deliveryCharges = total >= 1000 ? 0 : 100;
+            const finalTotal = total + deliveryCharges;
+            
+            message += `💰 *पेमेंट डिटेल्स:*\n`;
+            message += `Subtotal: ₹${total.toLocaleString()}\n`;
+            message += `Delivery: ${total >= 1000 ? 'FREE' : '₹' + deliveryCharges}\n`;
+            message += `*कुल राशि: ₹${finalTotal.toLocaleString()}*\n\n`;
+            message += `कृपया ऑर्डर कन्फर्म करें! 🙏`;
+
+            const phoneNumber = "9001048718";
+            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            
+            window.open(whatsappURL, '_blank');
+            closeCartModal();
+            showNotification('WhatsApp पर ऑर्डर भेजा गया!');
+        }
+
+        // Product detail modal
+        function showProductDetail(productId) {
+            const product = frameProducts[productId] || allFrameProducts[productId];
+            if (!product) {
+                showNotification('प्रोडक्ट डिटेल नहीं मिली!', 'error');
+                return;
+            }
+
+            currentProduct = product;
+            currentQuantity = 1;
+            
+            document.getElementById('modal-product-name').textContent = product.name;
+            document.getElementById('modal-product-price').textContent = `₹${product.price.toLocaleString()}`;
+            document.getElementById('modal-product-description').textContent = product.description;
+            
+            // Set image
+            const modalImage = document.getElementById('modal-product-image');
+            const modalPlaceholder = document.getElementById('modal-product-placeholder');
+            
+            if (product.image) {
+                modalImage.src = product.image;
+                modalImage.style.display = 'block';
+                modalPlaceholder.style.display = 'none';
+            } else {
+                modalImage.style.display = 'none';
+                modalPlaceholder.style.display = 'flex';
+            }
+            
+            document.getElementById('quantity-display').textContent = currentQuantity;
+            document.getElementById('product-detail-modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-detail-modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            currentProduct = null;
+        }
+
+        function changeQuantity(delta) {
+            currentQuantity = Math.max(1, currentQuantity + delta);
+            document.getElementById('quantity-display').textContent = currentQuantity;
+        }
+
+        function addToCartFromModal() {
+            if (currentProduct) {
+                addToCart(currentProduct.id, currentProduct.name, currentProduct.price, currentQuantity);
+                closeProductModal();
+            }
+        }
+
+        // Order now function
+        function orderNow() {
+            if (currentProduct) {
+                // Add to cart first
+                addToCart(currentProduct.id, currentProduct.name, currentProduct.price, currentQuantity);
+                closeProductModal();
+                
+                // Show quick order modal
+                showQuickOrderModal();
+            }
+        }
+
+        function showQuickOrderModal() {
+            const modal = document.createElement('div');
+            modal.className = 'quick-order-modal';
+            modal.id = 'quick-order-modal';
+            
+            modal.innerHTML = `
+                <div class="quick-order-content">
+                    <h3 style="margin-bottom: 20px; color: #2c3e50;">Order करने के लिए चुनें:</h3>
+                    
+                    <button onclick="goToFullCheckout()" class="quick-order-btn btn-checkout">
+                        <i class="fas fa-credit-card"></i> Complete Checkout Form
+                    </button>
+                    
+                    <button onclick="quickWhatsAppOrder()" class="quick-order-btn btn-whatsapp">
+                        <i class="fab fa-whatsapp"></i> Quick WhatsApp Order
+                    </button>
+                    
+                    <button onclick="closeQuickOrderModal()" class="quick-order-btn btn-cancel">
+                        Cancel
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function goToFullCheckout() {
+            closeQuickOrderModal();
+            window.location.href = 'orders.html?tab=checkout';
+        }
+
+        function quickWhatsAppOrder() {
+            closeQuickOrderModal();
+            orderViaWhatsApp();
+        }
+
+        function closeQuickOrderModal() {
+            const modal = document.getElementById('quick-order-modal');
+            if (modal) {
+                document.body.removeChild(modal);
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Search functionality
+        function searchProducts(searchTerm) {
+            const term = searchTerm.toLowerCase().trim();
+            
+            if (term === '') {
+                filteredProducts = { ...frameProducts };
+            } else {
+                filteredProducts = {};
+                Object.keys(frameProducts).forEach(key => {
+                    const product = frameProducts[key];
+                    if (product.name.toLowerCase().includes(term) || 
+                        product.description.toLowerCase().includes(term)) {
+                        filteredProducts[key] = product;
+                    }
+                });
+            }
+            
+            updateProductsGrid();
+        }
+
+        // Filter functions
+        function filterProducts(filterType, filterValue) {
+            applyAllFilters();
+        }
+
+        function applyAllFilters() {
+            const priceFilter = document.getElementById('priceFilter').value;
+            const sizeFilter = document.getElementById('sizeFilter').value;
+            const styleFilter = document.getElementById('styleFilter').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            filteredProducts = {};
+            
+            Object.keys(frameProducts).forEach(key => {
+                const product = frameProducts[key];
+                let shouldInclude = true;
+                
+                // Search filter
+                if (searchTerm && !product.name.toLowerCase().includes(searchTerm) && 
+                    !product.description.toLowerCase().includes(searchTerm)) {
+                    shouldInclude = false;
+                }
+                
+                // Price filter
+                if (priceFilter && shouldInclude) {
+                    const price = product.price;
+                    if (priceFilter === '0-2000' && (price < 0 || price > 2000)) shouldInclude = false;
+                    if (priceFilter === '2000-5000' && (price < 2000 || price > 5000)) shouldInclude = false;
+                    if (priceFilter === '5000-10000' && (price < 5000 || price > 10000)) shouldInclude = false;
+                    if (priceFilter === '10000' && price < 10000) shouldInclude = false;
+                }
+                
+                // Size filter
+                if (sizeFilter && shouldInclude && product.size !== sizeFilter) {
+                    shouldInclude = false;
+                }
+                
+                // Style filter
+                if (styleFilter && shouldInclude && product.style !== styleFilter) {
+                    shouldInclude = false;
+                }
+                
+                if (shouldInclude) {
+                    filteredProducts[key] = product;
+                }
+            });
+            
+            updateProductsGrid();
+        }
+
+        function clearFilters() {
+            document.getElementById('priceFilter').value = '';
+            document.getElementById('sizeFilter').value = '';
+            document.getElementById('styleFilter').value = '';
+            document.getElementById('searchInput').value = '';
+            filteredProducts = { ...frameProducts };
+            updateProductsGrid();
+            showNotification('सभी फिल्टर साफ़ कर दिए गए!', 'info');
+        }
+
+        function refreshProducts() {
+            loadFramesFromStorage();
+            clearFilters();
+            showNotification('प्रोडक्ट्स रिफ्रेश हो गए!', 'success');
+        }
+
+        // Listen for storage changes (when admin panel updates data)
+        window.addEventListener('storage', function(e) {
+            if (e.key && e.key.startsWith('nirakaar_products_')) {
+                console.log('🔄 Admin panel data changed, reloading frames...');
+                loadFramesFromStorage();
+            }
+        });
+
+        // Enhanced click handlers
+        document.addEventListener('click', function(event) {
+            const mobileNav = document.getElementById('mobileNav');
+            const menuToggle = document.getElementById('menuToggle');
+            const header = document.querySelector('.header');
+            
+            // Close mobile menu if clicking outside
+            if (mobileNav && mobileNav.classList.contains('active') && 
+                !header.contains(event.target) && 
+                !mobileNav.contains(event.target)) {
+                closeMobileMenu();
+            }
+        });
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('product-detail-modal');
+            if (event.target === modal) {
+                closeProductModal();
+            }
+            
+            const cartModal = document.getElementById('cart-modal');
+            if (event.target === cartModal) {
+                closeCartModal();
+            }
+            
+            const quickOrderModal = document.getElementById('quick-order-modal');
+            if (event.target === quickOrderModal) {
+                closeQuickOrderModal();
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeProductModal();
+                closeCartModal();
+                closeQuickOrderModal();
+                closeMobileMenu();
+            }
+        });
+
+        // Mobile menu item click handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileNavItems = document.querySelectorAll('.mobile-nav .nav-item');
+            mobileNavItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    // Close menu after a short delay to allow navigation
+                    setTimeout(() => {
+                        closeMobileMenu();
+                    }, 100);
+                });
+            });
+        });
+
+        // Handle orientation change
+        window.addEventListener('orientationchange', function() {
+            setTimeout(() => {
+                closeMobileMenu();
+            }, 500);
+        });
+
+        // Enhanced touch handling for mobile menu toggle
+        let menuToggleTimeout;
+        const menuToggle = document.getElementById('menuToggle');
+
+        menuToggle.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            clearTimeout(menuToggleTimeout);
+        }, { passive: false });
+
+        menuToggle.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            menuToggleTimeout = setTimeout(() => {
+                toggleMobileMenu();
+            }, 50);
+        }, { passive: false });
+
+        menuToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            clearTimeout(menuToggleTimeout);
+            toggleMobileMenu();
+        });
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Nirakaar Silver Frames Page Loading...');
+            
+            // Load frames from admin panel or defaults
+            loadFramesFromStorage();
+            
+            // Update cart count
+            updateCartCount();
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        closeMobileMenu();
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Enhanced touch feedback for buttons
+            const touchElements = document.querySelectorAll('.btn, .cart-btn, .refresh-btn');
+            touchElements.forEach(element => {
+                element.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.98)';
+                }, { passive: true });
+                
+                element.addEventListener('touchend', function() {
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                }, { passive: true });
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    closeMobileMenu();
+                }
+            });
+
+            // Add input debouncing for search
+            let searchTimeout;
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        searchProducts(e.target.value);
+                    }, 300);
+                });
+            }
+            
+            console.log('✅ Frames page loaded successfully!');
+        });
+
+        // Service Worker Registration (Optional - for offline functionality)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful');
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+
+        // Performance optimization - Lazy loading for images
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            img.removeAttribute('data-src');
+                            observer.unobserve(img);
+                        }
+                    }
+                });
+            });
+
+            // Observe images when they're added to DOM
+            const observeImages = () => {
+                document.querySelectorAll('img[data-src]').forEach(img => {
+                    imageObserver.observe(img);
+                });
+            };
+
+            // Call initially and after DOM updates
+            setTimeout(observeImages, 1000);
+        }
+    </script>
+
+    <!-- Include website integration if available -->
+    <script>
+        // Fallback integration functions if external file not available
+        if (typeof addToCart === 'undefined') {
+            console.log('Using built-in cart functionality');
+        }
+    </script>
+</body>
+</html>
